@@ -1,12 +1,10 @@
 using Backend.Models;
 using Backend.Services;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -14,23 +12,31 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 app.UsePathBase("/api");
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
-app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapPost("/email", (EmailDto email, IEmailService emailService) =>
+app.MapPost("/api/email", (EmailDto email, IEmailService emailService, ILogger<EmailService> logger) =>
 {
-    emailService.SendEmailAsync(email);
+    logger.LogInformation("Received request to send email.");
+    try
+    {
+        emailService.SendEmailAsync(email);
+        logger.LogInformation("Email sent successfully.");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while sending the email.");
+        // Возвращаем соответствующий статусный код или сообщение об ошибке
+        return Results.StatusCode(StatusCodes.Status500InternalServerError);
+    }
     return Results.Ok();
 });
+
 
 app.Run();

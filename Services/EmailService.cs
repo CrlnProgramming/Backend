@@ -21,13 +21,15 @@ namespace Backend.Services
             email.From.Add(MailboxAddress.Parse(emailDto.From));
             email.To.Add(MailboxAddress.Parse(emailDto.To));
             email.Subject = emailDto.Subject;
-            email.Body = new TextPart(TextFormat.Text) { Text = emailDto.Body};
+            email.Body = new TextPart(TextFormat.Text) { Text = emailDto.Body };
 
-            using var smtp = new SmtpClient();
-            await smtp.ConnectAsync(_configuration["EmailHost"], 587, SecureSocketOptions.StartTls);
-            await smtp.AuthenticateAsync(_configuration["EmailUsername"], _configuration["EmailPassword"]);
-            await smtp.SendAsync(email);
-            await smtp.DisconnectAsync(true);
+            using (var smtp = new SmtpClient())
+            {
+                await smtp.ConnectAsync(_configuration["EmailHost"], 25, false);
+                await smtp.AuthenticateAsync(_configuration["EmailUsername"], _configuration["EmailPassword"]);
+                await smtp.SendAsync(email);
+                await smtp.DisconnectAsync(true);
+            }
         }
     }
 }
