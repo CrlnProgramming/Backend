@@ -10,6 +10,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IEmailService, EmailService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CORSPolicy", builder => builder.AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed((hosts) => true));
+});
 var app = builder.Build();
 app.UsePathBase("/api");
 
@@ -18,11 +22,6 @@ app.UseSwaggerUI();
 app.UseAuthorization();
 app.MapControllers();
 app.UseRouting();
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CORSPolicy", builder => builder.AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed((hosts) => true));
-});
 
 
 app.UseCors("CORSPolicy");
