@@ -11,7 +11,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
-app.UsePathBase("/api");
+//app.UsePathBase("/api");
 
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -21,7 +21,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapPost("/api/email", (EmailDto email, IEmailService emailService, ILogger<EmailService> logger) =>
+app.MapPost("/email", (EmailDto email, IEmailService emailService, ILogger<EmailService> logger) =>
 {
     logger.LogInformation("Received request to send email.");
     try
