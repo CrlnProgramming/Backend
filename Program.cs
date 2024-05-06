@@ -3,6 +3,7 @@ using Backend.Services;
 using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
