@@ -1,6 +1,5 @@
 using Backend.Models;
 using Backend.Services;
-using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls();
