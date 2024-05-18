@@ -3,7 +3,6 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
-using Org.BouncyCastle.Tsp;
 
 namespace Backend.Services
 {
@@ -26,7 +25,7 @@ namespace Backend.Services
 
             using (var smtp = new SmtpClient())
             {
-                await smtp.ConnectAsync(_configuration["EmailHost"], 465, false);
+                await smtp.ConnectAsync(_configuration["EmailHost"], 465, true);
                 await smtp.AuthenticateAsync(_configuration["EmailUsername"], _configuration["EmailPassword"]);
                 await smtp.SendAsync(email);
                 await smtp.DisconnectAsync(true);
