@@ -3,6 +3,7 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
+using Org.BouncyCastle.Tsp;
 
 namespace Backend.Services
 {
@@ -18,14 +19,14 @@ namespace Backend.Services
         public async Task SendEmailAsync(EmailDto emailDto)
         {
             var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse(emailDto.From));
+            email.From.Add(MailboxAddress.Parse("info@softbox-solution.ru"));
             email.To.Add(MailboxAddress.Parse(emailDto.To));
             email.Subject = emailDto.Subject;
             email.Body = new TextPart(TextFormat.Text) { Text = emailDto.Body };
 
             using (var smtp = new SmtpClient())
             {
-                await smtp.ConnectAsync(_configuration["EmailHost"], 25, false);
+                await smtp.ConnectAsync(_configuration["EmailHost"], 465, false);
                 await smtp.AuthenticateAsync(_configuration["EmailUsername"], _configuration["EmailPassword"]);
                 await smtp.SendAsync(email);
                 await smtp.DisconnectAsync(true);
