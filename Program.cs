@@ -1,5 +1,6 @@
 using Backend.Models;
 using Backend.Services;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 //builder.WebHost.UseUrls();
@@ -28,10 +29,22 @@ app.UsePathBase("/api");
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseStaticFiles();
 
+app.UseRouting();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.UseCors("CORSPolicy");
 
